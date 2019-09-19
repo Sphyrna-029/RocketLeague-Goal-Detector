@@ -55,12 +55,11 @@ def main():
 
         if score < ssim_thresh_hold:
             if cool == coolval:
-                print("Goal!")
+                print("Goal!") #Do cool stuff here
                 cool = 0 #Reset our counter after a goal is detecte
         
         if cool < coolval: #This block prevents the timer from contstatly counting upward to infinity if a goal is never detected
             cool += 1
-            print(cool)
 
         frame2 = frame
 
