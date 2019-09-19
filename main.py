@@ -16,7 +16,7 @@ y2 = 100
 #Angle
 angle = -5
 
-#If the ssim is less than this value the frames are different. Increase this for greater sensitivity. 
+#If goals are not being detected, increase this number. If there are too many false positives, decrease.
 ssim_thresh_hold = 0.65
 
 #Set to True to display the modified frames in a window 
@@ -38,7 +38,7 @@ def main():
         grayA = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         grayB = cv2.cvtColor(frame2, cv2.COLOR_BGR2GRAY)
         
-        #Convert our image to black and white based on pixel intensity. This works because the score is displayed as a white font on orange/blue background, eliminating noise in our frame comparison.
+        #Convert our image to black and white based on pixel intensity. This works because the score is displayed as a white font on transparent orange/blue background. This eliminates noise in our frame comparison.
         #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
         thresh_frame1 = cv2.threshold(grayA, 170, 255, cv2.THRESH_BINARY)[1] 
         thresh_frame1 = cv2.dilate(thresh_frame1, None, iterations = 2) 
@@ -56,14 +56,14 @@ def main():
         if score < ssim_thresh_hold:
             if cool == coolval:
                 print("Goal!") #Do cool stuff here
-                cool = 0 #Reset our counter after a goal is detecte
+                cool = 0 #Reset our counter after a goal is detected
         
         if cool < coolval: #This block prevents the timer from contstatly counting upward to infinity if a goal is never detected
             cool += 1
 
         frame2 = frame
 
-        if cv2.waitKey(1) & 0xFF == ord('q'):
+        if cv2.waitKey(1) & 0xFF == ord('q'): #Press q to quit
             break
 
 if __name__ == '__main__':
