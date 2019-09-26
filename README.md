@@ -6,4 +6,4 @@ pip install -r requirements.txt
 ```
 
 
-![](https://www.pnglot.com/pngfile/detail/158-1589516_rocket-league-png-rocket-league-logo-png.png)
+![](arduino.png)
