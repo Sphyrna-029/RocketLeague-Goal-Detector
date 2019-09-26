@@ -2,7 +2,7 @@
 #include <SoftwareSerial.h> 
 
 #define NUM_LEDS 144 //Number of leds in the strip, WS2812B
-#define DATA_PIN 3 //Pin 3 of the arduino
+#define DATA_PIN 6 //Pin 6 on the arduino
 
 CRGB leds[NUM_LEDS];
 
