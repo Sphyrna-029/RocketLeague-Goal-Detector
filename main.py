@@ -1,4 +1,5 @@
 import cv2
+import serial
 import numpy as np
 from PIL import Image
 from PIL import ImageGrab
@@ -6,6 +7,9 @@ from skimage.measure import compare_ssim
 
 
 #~~~~~~~~~~~~~~~~~~CONFIG~~~~~~~~~~~~~~~~~~
+#Serial port for arduino
+s = serial.Serial('COM3', 9600)
+
 #Area to capture. In this case our score will always be on the left hand side. This will be different depending on your game resolution.
 #Top left corner
 x = 795
@@ -16,10 +20,9 @@ y2 = 100
 #Angle
 angle = -5
 
-#If goals are not being detected, increase this number. If there are too many false positives, decrease.
+#If the ssim is less than this value the frames are different. Increase this for greater sensitivity. 
 ssim_thresh_hold = 0.65
 
-#Set to True to display the modified frames in a window 
 display_frame = False
 
 #Have a cool down timer between goals detected to minimize the chances of false positives.
@@ -38,7 +41,7 @@ def main():
         grayA = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         grayB = cv2.cvtColor(frame2, cv2.COLOR_BGR2GRAY)
         
-        #Convert our image to black and white based on pixel intensity. This works because the score is displayed as a white font on transparent orange/blue background. This eliminates noise in our frame comparison.
+        #Convert our image to black and white based on pixel intensity. This works because the score is displayed as a white font on orange/blue background, eliminating noise in our frame comparison.
         #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
         thresh_frame1 = cv2.threshold(grayA, 170, 255, cv2.THRESH_BINARY)[1] 
         thresh_frame1 = cv2.dilate(thresh_frame1, None, iterations = 2) 
@@ -55,15 +58,16 @@ def main():
 
         if score < ssim_thresh_hold:
             if cool == coolval:
-                print("Goal!") #Do cool stuff here
-                cool = 0 #Reset our counter after a goal is detected
+                print("Goal!")
+                s.write(bytes(b'1')) #Send the number 1 over serial to the arduino
+                cool = 0 #Reset our counter after a goal is detecte
         
         if cool < coolval: #This block prevents the timer from contstatly counting upward to infinity if a goal is never detected
             cool += 1
 
         frame2 = frame
 
-        if cv2.waitKey(1) & 0xFF == ord('q'): #Press q to quit
+        if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
 if __name__ == '__main__':
