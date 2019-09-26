@@ -1,1 +1,1 @@
-pillow, numpy, opencv-python, scikit-image
+pillow, numpy, opencv-python, scikit-image, pyserial
